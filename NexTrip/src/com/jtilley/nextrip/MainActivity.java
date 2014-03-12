@@ -1,17 +1,29 @@
 package com.jtilley.nextrip;
 
 
+
+
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
+import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity implements StoresMapFragment.StoreMap{
+private LocationManager lManager;
+private String provider;
 ActionBar aBar;
+Location location;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +54,19 @@ ActionBar aBar;
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	public Location getLocation(){
+		lManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		provider = lManager.getBestProvider(criteria, false);
+		
+		lManager.requestLocationUpdates(provider, 0, 1, new MyLocationListener());
+		location = lManager.getLastKnownLocation(provider);
+		Log.i("location", location.toString());
+		
+		return location;
 	}
 
 	
@@ -95,5 +120,34 @@ ActionBar aBar;
 		}
 
 	}
+	
+	private final class MyLocationListener implements LocationListener{
+
+		@Override
+		public void onLocationChanged(Location location) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+
 	
 }
