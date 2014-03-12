@@ -3,12 +3,14 @@ package com.jtilley.nextrip;
 import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -18,20 +20,21 @@ public class StoresMapFragment extends MapFragment{
 GoogleMap map;
 Location location;
 
-	public interface StoreMap{
+	public interface OnStoresMapClicked{
 		Location getLocation();
+		void displaySearch(Boolean tabSearch);
 	}
 	
-	private StoreMap parentActivity;
+	private OnStoresMapClicked parentActivity;
 	
 	@Override
 	public void onAttach(Activity activity) {
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
-		if(activity instanceof StoreMap){
-			parentActivity = (StoreMap) activity;
+		if(activity instanceof OnStoresMapClicked){
+			parentActivity = (OnStoresMapClicked) activity;
 		}else{
-			throw new ClassCastException(activity.toString() + "must implement StoreMap");
+			throw new ClassCastException(activity.toString() + "must implement OnStoresMapClicked");
 		}
 	}
 	
@@ -45,12 +48,20 @@ Location location;
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
+		parentActivity.displaySearch(false);
 		map = this.getMap();
 		location = parentActivity.getLocation();
 		LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
 		
-		
+		map.setOnMapLongClickListener(new OnMapLongClickListener() {
+			
+			@Override
+			public void onMapLongClick(LatLng arg0) {
+				// TODO Auto-generated method stub
+				Log.i("LATLNG", arg0.toString());
+			}
+		});
 		
 		@SuppressWarnings("unused")
 		Marker current = map.addMarker(new MarkerOptions().position(position).title("HERE"));
