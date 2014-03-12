@@ -17,6 +17,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 import android.app.ActionBar;
@@ -38,7 +41,7 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
 
-public class MainActivity extends FragmentActivity implements StoresFragment.OnStoresListClicked, StoresMapFragment.OnStoresMapClicked,NearbyMapFragment.OnPlacesClicked, OnQueryTextListener{
+public class MainActivity extends FragmentActivity implements StoresFragment.OnStoresListClicked, StoresMapFragment.OnStoresMapClicked, NearbyMapFragment.OnPlacesClicked, OnQueryTextListener{
 private LocationManager lManager;
 private String provider;
 ActionBar aBar;
@@ -52,6 +55,7 @@ SearchView searchField;
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 		
 		aBar = getActionBar();
 		aBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -68,10 +72,10 @@ SearchView searchField;
 		aBar.addTab(tab1);
 		aBar.addTab(tab2);
 		aBar.addTab(tab3);
-		Location current = getLocation();
+		/*Location current = getLocation();
 		if(current != null){
 			getPlaces("hardware", current);
-		}
+		}*/
 		aBar.setSelectedNavigationItem(0);
 	}
 
@@ -129,6 +133,7 @@ SearchView searchField;
 	}
 
 	
+	
 	public static class TabListener<T extends Fragment>implements ActionBar.TabListener{
 		private Fragment mFragment;
 		private final Activity mActivity;
@@ -141,14 +146,22 @@ SearchView searchField;
 			mActivity = activity;
 			mTag = tag;
 			mClass = clas;
-			FragmentTransaction ft = mActivity.getFragmentManager().beginTransaction();
-			mFragment = Fragment.instantiate(mActivity, mClass.getName());
-			if(mFragment == null){
+			
+			mFragment = mActivity.getFragmentManager().findFragmentByTag(mTag);
+			//FragmentTransaction ft = mActivity.getFragmentManager().beginTransaction();
+			
+			//mFragment = Fragment.instantiate(mActivity, mClass.getName());
+			/*if(mFragment == null){
 				ft.add(android.R.id.content, mFragment, mTag);
+				
 			}else{
 				ft.remove(mFragment);
+			}*/
+			if(mFragment != null && !mFragment.isDetached()){
+				FragmentTransaction ft = mActivity.getFragmentManager().beginTransaction();
+				ft.detach(mFragment);
+				ft.commit();
 			}
-			ft.commit();
 			
 		}
 		
@@ -166,7 +179,8 @@ SearchView searchField;
 				ft.add(android.R.id.content, mFragment, mTag);
 				
 			}else{
-				ft.replace(android.R.id.content, mFragment);
+				ft.attach(mFragment);
+				//ft.replace(android.R.id.content, mFragment);
 			}
 		}
 
@@ -174,7 +188,8 @@ SearchView searchField;
 		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 			// TODO Auto-generated method stub
 			if(mFragment != null){
-				ft.remove(mFragment);
+				ft.detach(mFragment);
+				//ft.hide(mFragment);
 			}
 		}
 
@@ -215,11 +230,26 @@ SearchView searchField;
 		GetPlaces places = new GetPlaces();
 		try {
 			data = places.execute(urlString).get();
-			Log.i("DATA", data.toString());
+			//Log.i("DATA", data.toString());
+			JSONObject json = new JSONObject(data.toString());
+			
+			NearbyMapFragment nearbyMap = (NearbyMapFragment) getFragmentManager().findFragmentByTag("nearby");
+			nearbyMap.displayPlaces(new JSONObject(data.toString()));
+			JSONArray results = json.getJSONArray("results");
+			for(int i = 0; i < results.length(); i++){
+				JSONObject place = new JSONObject(results.get(i).toString());
+				String name = place.getString("name");
+				JSONObject placeLoc = place.getJSONObject("geometry").getJSONObject("location");
+						
+				Log.i("Place", name + " : " + placeLoc.getString("lng") + " , " + placeLoc.getString("lat"));
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -271,6 +301,12 @@ SearchView searchField;
 	public boolean onQueryTextChange(String arg0) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void displayPlaces(JSONObject json) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
