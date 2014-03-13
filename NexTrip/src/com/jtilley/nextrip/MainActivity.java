@@ -1,9 +1,5 @@
 package com.jtilley.nextrip;
 
-
-
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +19,6 @@ import org.json.JSONObject;
 
 import com.google.android.gms.maps.model.LatLng;
 
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -31,6 +26,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -54,6 +50,7 @@ import android.widget.SearchView.OnQueryTextListener;
 public class MainActivity extends FragmentActivity implements StoresFragment.OnStoresListClicked, StoresMapFragment.OnStoresMapClicked, NearbyMapFragment.OnPlacesClicked, OnQueryTextListener{
 private LocationManager lManager;
 private String provider;
+MyLocationListener locListener;
 ActionBar aBar;
 Location location;
 String data;
@@ -64,7 +61,6 @@ SearchView searchField;
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
 		
 		
 		aBar = getActionBar();
@@ -82,11 +78,16 @@ SearchView searchField;
 		aBar.addTab(tab1);
 		aBar.addTab(tab2);
 		aBar.addTab(tab3);
-		/*Location current = getLocation();
-		if(current != null){
-			getPlaces("hardware", current);
-		}*/
-		aBar.setSelectedNavigationItem(0);
+		
+		if(savedInstanceState != null){
+			int tab = savedInstanceState.getInt("tab");
+			aBar.setSelectedNavigationItem(tab);
+		}else{
+			aBar.setSelectedNavigationItem(0);
+		}
+		locListener = new MyLocationListener();
+		getLocation();
+		
 	}
 
 	@Override
@@ -99,6 +100,13 @@ SearchView searchField;
 		return true;
 	}
 	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+		int tab = aBar.getSelectedNavigationIndex();
+		outState.putInt("tab", tab);
+	}
 	
 	private void setupSearchView(SearchView search){
 		search.setIconifiedByDefault(false);
@@ -136,10 +144,35 @@ SearchView searchField;
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		provider = lManager.getBestProvider(criteria, false);
 		
-		lManager.requestLocationUpdates(provider, 0, 1, new MyLocationListener());
+		lManager.requestLocationUpdates(provider, 0, 1, locListener);
 		location = lManager.getLastKnownLocation(provider);
 		
 		return location;
+	}
+	
+	public void saveStore(String name, LatLng position){
+		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
+		SharedPreferences.Editor editPrefs = prefs.edit();
+		String savedStores = prefs.getString("saved_stores", null);
+		JSONArray storesArray;
+		try {
+			if(savedStores != null){
+				storesArray = new JSONArray(savedStores.toString());
+			}else{
+				storesArray = new JSONArray();
+			}
+			JSONObject store = new JSONObject();
+			store.put("name", name);
+			store.put("lat", position.latitude);
+			store.put("lng", position.longitude);
+			storesArray.put(store);
+			editPrefs.putString("saved_stores", storesArray.toString());
+			editPrefs.commit();
+			Log.i("SAVED", storesArray.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	
@@ -158,15 +191,7 @@ SearchView searchField;
 			mClass = clas;
 			
 			mFragment = mActivity.getFragmentManager().findFragmentByTag(mTag);
-			//FragmentTransaction ft = mActivity.getFragmentManager().beginTransaction();
 			
-			//mFragment = Fragment.instantiate(mActivity, mClass.getName());
-			/*if(mFragment == null){
-				ft.add(android.R.id.content, mFragment, mTag);
-				
-			}else{
-				ft.remove(mFragment);
-			}*/
 			if(mFragment != null && !mFragment.isDetached()){
 				FragmentTransaction ft = mActivity.getFragmentManager().beginTransaction();
 				ft.detach(mFragment);
@@ -190,7 +215,6 @@ SearchView searchField;
 				
 			}else{
 				ft.attach(mFragment);
-				//ft.replace(android.R.id.content, mFragment);
 			}
 		}
 
@@ -199,7 +223,6 @@ SearchView searchField;
 			// TODO Auto-generated method stub
 			if(mFragment != null){
 				ft.detach(mFragment);
-				//ft.hide(mFragment);
 			}
 		}
 
@@ -210,7 +233,7 @@ SearchView searchField;
 		@Override
 		public void onLocationChanged(Location location) {
 			// TODO Auto-generated method stub
-			
+			Log.i("LOC", location.toString());
 		}
 
 		@Override
@@ -240,19 +263,9 @@ SearchView searchField;
 		GetPlaces places = new GetPlaces();
 		try {
 			data = places.execute(urlString).get();
-			//Log.i("DATA", data.toString());
-			JSONObject json = new JSONObject(data.toString());
 			
 			NearbyMapFragment nearbyMap = (NearbyMapFragment) getFragmentManager().findFragmentByTag("nearby");
 			nearbyMap.displayPlaces(new JSONObject(data.toString()));
-			JSONArray results = json.getJSONArray("results");
-			for(int i = 0; i < results.length(); i++){
-				JSONObject place = new JSONObject(results.get(i).toString());
-				String name = place.getString("name");
-				JSONObject placeLoc = place.getJSONObject("geometry").getJSONObject("location");
-						
-				Log.i("Place", name + " : " + placeLoc.getString("lng") + " , " + placeLoc.getString("lat"));
-			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -262,7 +275,7 @@ SearchView searchField;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}	
 	}
 	
 	private class GetPlaces extends AsyncTask<String, Void, String>{
@@ -345,9 +358,15 @@ SearchView searchField;
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					String temp = textField.getText().toString();
-					if(temp.length() != 0){
-						Log.i("STORE", temp + " : " + String.valueOf(pos.latitude) + " " + String.valueOf(pos.longitude));
+					String storeName = textField.getText().toString();
+					if(storeName.length() != 0){
+						((MainActivity)getActivity()).saveStore(storeName, pos);
+						Log.i("STORE", storeName + " : " + String.valueOf(pos.latitude) + " " + String.valueOf(pos.longitude));
+						dismiss();
+						if(getActivity().getActionBar().getSelectedNavigationIndex() == 1){
+							StoresMapFragment storeMap = (StoresMapFragment) getActivity().getFragmentManager().findFragmentByTag("map");
+							storeMap.displayStoresMarkers();
+						}
 					}else{
 						Toast.makeText(getActivity(), "Please enter name of Store.", Toast.LENGTH_SHORT).show();
 					}
@@ -379,6 +398,8 @@ SearchView searchField;
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 
 	

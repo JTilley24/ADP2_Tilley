@@ -1,12 +1,20 @@
 package com.jtilley.nextrip;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +26,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class StoresMapFragment extends MapFragment{
 GoogleMap map;
 Location location;
+String storesString;
+ArrayList<String> storesArray;
+MarkerOptions current;
 
 	public interface OnStoresMapClicked{
 		Location getLocation();
@@ -42,6 +53,7 @@ Location location;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		setRetainInstance(true);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
@@ -51,23 +63,67 @@ Location location;
 		parentActivity.displaySearch(false);
 		map = this.getMap();
 		location = parentActivity.getLocation();
-		LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
-		
-		map.setOnMapLongClickListener(new OnMapLongClickListener() {
+		if(location != null){
+			LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
 			
-			@Override
-			public void onMapLongClick(LatLng position) {
-				// TODO Auto-generated method stub
-				String name = "";
-				parentActivity.showDialog(name, position.latitude, position.longitude);
-				Log.i("LATLNG", position.toString());
-			}
-		});
+			map.setOnMapLongClickListener(new OnMapLongClickListener() {
+				
+				@Override
+				public void onMapLongClick(LatLng position) {
+					// TODO Auto-generated method stub
+					String name = "";
+					parentActivity.showDialog(name, position.latitude, position.longitude);
+					Log.i("LATLNG", position.toString());
+				}
+			});
+			current = new MarkerOptions().position(position).title("HERE");
+			map.addMarker(current);
+			map.addMarker(new MarkerOptions().position(position).title("HERE"));
+			displayStoresMarkers();
+		}else{
+			Toast.makeText(getActivity(), "Please turn on GPS and try again.", Toast.LENGTH_SHORT).show();
+		}
 		
-		map.addMarker(new MarkerOptions().position(position).title("HERE"));
+		
 		
 		super.onResume();
+	}
+	
+	public void displayStoresMarkers(){
+		map.clear();
+		map.addMarker(current);
+		SharedPreferences prefs = getActivity().getSharedPreferences("user_prefs", 0);
+		storesString = prefs.getString("saved_stores", null);
+		if(storesString != null){
+			try {
+				
+				JSONArray stores = new JSONArray(storesString);
+				for(int i=0; i< stores.length();i++){
+					JSONObject storeObj = (JSONObject) stores.get(i);
+					String storeName = storeObj.getString("name");
+					Double lat = storeObj.getDouble("lat");
+					Double lng = storeObj.getDouble("lng");
+					LatLng storePos = new LatLng(lat, lng);
+					map.addMarker(new MarkerOptions().position(storePos).title(storeName));
+					
+				}
+				
+				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			Toast.makeText(getActivity(), "No Saved Stores to Display", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
 	}
 
 }

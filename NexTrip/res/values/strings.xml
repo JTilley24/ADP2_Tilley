@@ -6,5 +6,6 @@
     <string name="search">Search</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
-
+	<string name="dialog_name">Store Name:</string>
+	<string name="no_stores">No Saved Stores to Display</string>
 </resources>
