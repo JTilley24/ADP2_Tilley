@@ -16,8 +16,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -32,6 +34,7 @@ public class NearbyMapFragment extends MapFragment {
 			Location getLocation();
 			void displaySearch(Boolean tabSearch);
 			void displayPlaces(JSONObject json);
+			void showDialog(String name, Double lat, Double lng);
 		}
 		
 		private OnPlacesClicked parentActivity;
@@ -66,6 +69,18 @@ public class NearbyMapFragment extends MapFragment {
 			current = new MarkerOptions().position(position).title("HERE");
 			map.addMarker(current);
 		}
+		
+		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+			
+			@Override
+			public void onInfoWindowClick(Marker marker) {
+				// TODO Auto-generated method stub
+				String name = marker.getTitle().toString();
+				LatLng position = marker.getPosition();
+				parentActivity.showDialog(name, position.latitude, position.longitude);
+			}
+		});
+		
 		map.setOnMarkerClickListener(new OnMarkerClickListener() {
 			
 			@Override
@@ -99,7 +114,7 @@ public class NearbyMapFragment extends MapFragment {
 					String name = place.getString("name");
 					JSONObject placeLoc = place.getJSONObject("geometry").getJSONObject("location");
 					LatLng placePos = new LatLng(placeLoc.getDouble("lat"), placeLoc.getDouble("lng"));
-					map.addMarker(new MarkerOptions().position(placePos).title(name));		
+					map.addMarker(new MarkerOptions().position(placePos).title(name).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));		
 					Log.i("Place", name + " : " + placeLoc.getString("lng") + " , " + placeLoc.getString("lat"));
 				}
 			}else{

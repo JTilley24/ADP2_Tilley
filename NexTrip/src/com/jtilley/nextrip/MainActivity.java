@@ -21,9 +21,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.model.LatLng;
+
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
@@ -36,8 +39,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.Toast;
 import android.widget.SearchView.OnQueryTextListener;
 
 
@@ -296,7 +306,68 @@ SearchView searchField;
 		}
 		
 	}
+	
+	public void showDialog(String name, Double lat, Double lng){
+		StoreDialog dialog = new StoreDialog();
+		Bundle args = new Bundle();
+		args.putString("name", name);
+		args.putDouble("lat", lat);
+		args.putDouble("lng", lng);
+		dialog.setArguments(args);
+		dialog.show(getFragmentManager(), "dialog_fragment");
+	}
 
+	public static class StoreDialog extends DialogFragment{
+		EditText textField;
+		Button saveButton;
+		Button cancelButton;
+		
+		static StoreDialog newInstance(){
+			return new StoreDialog();
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			View view = inflater.inflate(R.layout.dialog_fragment, container);
+			getDialog().setTitle("Save Store?");
+			final String name = getArguments().get("name").toString();
+			final LatLng pos = new LatLng(getArguments().getDouble("lat"), getArguments().getDouble("lng"));
+			textField = (EditText) view.findViewById(R.id.searchField);
+			saveButton = (Button) view.findViewById(R.id.saveButton);
+			cancelButton = (Button) view.findViewById(R.id.cancelButton);
+			
+			textField.setText(name);
+			
+			saveButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					String temp = textField.getText().toString();
+					if(temp.length() != 0){
+						Log.i("STORE", temp + " : " + String.valueOf(pos.latitude) + " " + String.valueOf(pos.longitude));
+					}else{
+						Toast.makeText(getActivity(), "Please enter name of Store.", Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+			
+			cancelButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dismiss();
+				}
+			});
+			
+			
+			return view;
+		}
+	}
+	
 	@Override
 	public boolean onQueryTextChange(String arg0) {
 		// TODO Auto-generated method stub
@@ -308,6 +379,7 @@ SearchView searchField;
 		// TODO Auto-generated method stub
 		
 	}
+
 
 	
 }

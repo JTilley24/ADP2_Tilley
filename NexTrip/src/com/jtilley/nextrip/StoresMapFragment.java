@@ -13,7 +13,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class StoresMapFragment extends MapFragment{
@@ -23,6 +22,7 @@ Location location;
 	public interface OnStoresMapClicked{
 		Location getLocation();
 		void displaySearch(Boolean tabSearch);
+		void showDialog(String name, Double lat, Double lng);
 	}
 	
 	private OnStoresMapClicked parentActivity;
@@ -57,14 +57,15 @@ Location location;
 		map.setOnMapLongClickListener(new OnMapLongClickListener() {
 			
 			@Override
-			public void onMapLongClick(LatLng arg0) {
+			public void onMapLongClick(LatLng position) {
 				// TODO Auto-generated method stub
-				Log.i("LATLNG", arg0.toString());
+				String name = "";
+				parentActivity.showDialog(name, position.latitude, position.longitude);
+				Log.i("LATLNG", position.toString());
 			}
 		});
 		
-		@SuppressWarnings("unused")
-		Marker current = map.addMarker(new MarkerOptions().position(position).title("HERE"));
+		map.addMarker(new MarkerOptions().position(position).title("HERE"));
 		
 		super.onResume();
 	}
