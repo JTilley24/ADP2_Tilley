@@ -67,6 +67,7 @@ MarkerOptions current;
 			LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
 			
+			//Save Selected Location as new Store
 			map.setOnMapLongClickListener(new OnMapLongClickListener() {
 				
 				@Override
@@ -77,22 +78,17 @@ MarkerOptions current;
 					Log.i("LATLNG", position.toString());
 				}
 			});
-			current = new MarkerOptions().position(position).title("HERE");
-			map.addMarker(current);
-			map.addMarker(new MarkerOptions().position(position).title("HERE"));
+			map.setMyLocationEnabled(true);
 			displayStoresMarkers();
 		}else{
 			Toast.makeText(getActivity(), "Please turn on GPS and try again.", Toast.LENGTH_SHORT).show();
 		}
-		
-		
-		
 		super.onResume();
 	}
 	
+	//Display Markers For Saved Stores
 	public void displayStoresMarkers(){
 		map.clear();
-		map.addMarker(current);
 		SharedPreferences prefs = getActivity().getSharedPreferences("user_prefs", 0);
 		storesString = prefs.getString("saved_stores", null);
 		if(storesString != null){
@@ -106,10 +102,7 @@ MarkerOptions current;
 					Double lng = storeObj.getDouble("lng");
 					LatLng storePos = new LatLng(lat, lng);
 					map.addMarker(new MarkerOptions().position(storePos).title(storeName));
-					
 				}
-				
-				
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -20,19 +20,6 @@
         android:orientation="horizontal"
         android:layout_marginTop="5dp">
         <Button
-		    android:id="@+id/saveButton"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="@string/save"
-		    android:layout_weight="1"
-		     style="?android:attr/borderlessButtonStyle"
-		    />
-        <View 
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:background="?android:attr/dividerVertical"/>
-	    <Button
 		    android:id="@+id/cancelButton"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
@@ -40,6 +27,20 @@
 		    android:layout_weight="1"
 		    style="?android:attr/borderlessButtonStyle"
 		    />
+        
+        <View 
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:background="?android:attr/dividerVertical"/>
+	    <Button
+		    android:id="@+id/saveButton"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="@string/save"
+		    android:layout_weight="1"
+		     style="?android:attr/borderlessButtonStyle"
+		   />
         
         
     </LinearLayout>

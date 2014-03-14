@@ -48,7 +48,7 @@ ArrayList<String> storesArray;
 		
 		storesList = (ListView) view.findViewById(R.id.storeList);
 		noStores = (TextView) view.findViewById(R.id.noStores);
-	
+		
 		displayStoresList();
 		
 		return view;
@@ -62,6 +62,7 @@ ArrayList<String> storesArray;
 		displayStoresList();
 	}
 
+	//Display Saved Stores in ListView
 	public void displayStoresList(){
 		SharedPreferences prefs = getActivity().getSharedPreferences("user_prefs", 0);
 		storesString = prefs.getString("saved_stores", null);

@@ -1,5 +1,7 @@
 package com.jtilley.nextrip;
 
+
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +16,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -25,7 +26,6 @@ public class NearbyMapFragment extends MapFragment {
 	GoogleMap map;
 	Location location;
 	Context mContext;
-	MarkerOptions current;
 	
 		public interface OnPlacesClicked{
 			Location getLocation();
@@ -64,10 +64,10 @@ public class NearbyMapFragment extends MapFragment {
 		if(location != null){
 			LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
-			current = new MarkerOptions().position(position).title("HERE");
-			map.addMarker(current);
+			map.setMyLocationEnabled(true);
 		}
 		
+		//Save Selected Place as new Store
 		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			
 			@Override
@@ -77,25 +77,12 @@ public class NearbyMapFragment extends MapFragment {
 				LatLng position = marker.getPosition();
 				parentActivity.showDialog(name, position.latitude, position.longitude);
 			}
-		});
-		
-		map.setOnMarkerClickListener(new OnMarkerClickListener() {
-			
-			@Override
-			public boolean onMarkerClick(Marker marker) {
-				// TODO Auto-generated method stub
-				Log.i("MARKER", marker.getTitle().toString());
-				return false;
-			}
-		});
-			
+		});			
 	}
 
+	//Display Markers for Places based on Search
 	public void displayPlaces(JSONObject json){
 		map.clear();
-		if(current != null){
-			map.addMarker(current);
-		}
 		try {
 			JSONArray results = json.getJSONArray("results");
 			String status = json.getString("status");

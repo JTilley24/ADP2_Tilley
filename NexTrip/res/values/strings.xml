@@ -4,6 +4,7 @@
     <string name="app_name">NexTrip</string>
     <string name="action_settings">Settings</string>
     <string name="search">Search</string>
+    <string name="action_add">Add Item</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
 	<string name="dialog_name">Store Name:</string>

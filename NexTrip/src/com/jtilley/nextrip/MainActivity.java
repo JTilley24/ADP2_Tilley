@@ -37,6 +37,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -56,16 +57,17 @@ Location location;
 String data;
 Menu abMenu;
 SearchView searchField;
+MenuItem addAction;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
-		
+		//Setup ActionBar and Tabs
 		aBar = getActionBar();
+		aBar.setTitle("NexTrip");
 		aBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		aBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
+		aBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE, ActionBar.DISPLAY_USE_LOGO);
 		
 		Tab tab1 = aBar.newTab().setText("Stores")
 								.setTabListener(new TabListener<StoresFragment>(this, "stores", StoresFragment.class));
@@ -85,11 +87,13 @@ SearchView searchField;
 		}else{
 			aBar.setSelectedNavigationItem(0);
 		}
-		locListener = new MyLocationListener();
-		getLocation();
 		
+		//Get Current Location
+		locListener = new MyLocationListener();
+		getLocation();	
 	}
-
+	
+	//Create ActionBar Menu
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
@@ -97,9 +101,21 @@ SearchView searchField;
 		abMenu = menu;
 		searchField = (SearchView) menu.findItem(R.id.action_search).getActionView();
 		setupSearchView(searchField);
+		addAction = (MenuItem) menu.findItem(R.id.action_add);
 		return true;
 	}
 	
+	//Click for Add Item button
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		if(item.getItemId() == addAction.getItemId()){
+			Toast.makeText(this, "This will open the Add Item.", Toast.LENGTH_SHORT).show();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	//Save Selected Tab
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
@@ -108,12 +124,14 @@ SearchView searchField;
 		outState.putInt("tab", tab);
 	}
 	
+	//Setup for SearchView Action
 	private void setupSearchView(SearchView search){
 		search.setIconifiedByDefault(false);
 		search.setSubmitButtonEnabled(false);
 		search.setOnQueryTextListener(this);
 	}
 	
+	//Send User Input to Places API
 	@Override
 	public boolean onQueryTextSubmit(String search) {
 		// TODO Auto-generated method stub
@@ -126,6 +144,7 @@ SearchView searchField;
 		return true;
 	}
 	
+	//Display SearchView only in NearbyMap Tab
 	public void displaySearch(Boolean tabSearch){
 		if(abMenu != null){
 			if(tabSearch == true){
@@ -138,6 +157,7 @@ SearchView searchField;
 		}
 	}
 	
+	//Get Current Location
 	public Location getLocation(){
 		lManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		Criteria criteria = new Criteria();
@@ -150,6 +170,7 @@ SearchView searchField;
 		return location;
 	}
 	
+	//Save Store to storage
 	public void saveStore(String name, LatLng position){
 		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
 		SharedPreferences.Editor editPrefs = prefs.edit();
@@ -175,8 +196,6 @@ SearchView searchField;
 		}
 	}
 
-	
-	
 	public static class TabListener<T extends Fragment>implements ActionBar.TabListener{
 		private Fragment mFragment;
 		private final Activity mActivity;
@@ -256,10 +275,11 @@ SearchView searchField;
 		
 	}
 	
+	//Send Location and Search Input to Places API
 	public void getPlaces(String keyword, Location location){
 		Double lat = location.getLatitude();
 		Double lon = location.getLongitude();
-		String urlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ lat.toString() + "," + lon.toString() + "&radius=500&keyword="+ keyword + "&sensor=false&key=AIzaSyCEkgDX7_mDjucudKX5Y_JNWXxwHk0LRJE";
+		String urlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ lat.toString() + "," + lon.toString() + "&radius=3000&keyword="+ keyword + "&sensor=false&key=AIzaSyCEkgDX7_mDjucudKX5Y_JNWXxwHk0LRJE";
 		GetPlaces places = new GetPlaces();
 		try {
 			data = places.execute(urlString).get();
@@ -278,6 +298,7 @@ SearchView searchField;
 		}	
 	}
 	
+	//Places API
 	private class GetPlaces extends AsyncTask<String, Void, String>{
 
 		@Override
@@ -320,6 +341,7 @@ SearchView searchField;
 		
 	}
 	
+	//Display DialogFragment
 	public void showDialog(String name, Double lat, Double lng){
 		StoreDialog dialog = new StoreDialog();
 		Bundle args = new Bundle();
@@ -398,6 +420,8 @@ SearchView searchField;
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 	
 
