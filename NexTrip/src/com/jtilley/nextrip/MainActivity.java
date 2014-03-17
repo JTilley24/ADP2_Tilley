@@ -26,6 +26,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
@@ -110,7 +111,9 @@ MenuItem addAction;
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		if(item.getItemId() == addAction.getItemId()){
-			Toast.makeText(this, "This will open the Add Item.", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, "This will open the Add Item.", Toast.LENGTH_SHORT).show();
+			Intent addItem = new Intent(this, AddItemActivity.class);
+			startActivity(addItem);
 		}
 		return super.onOptionsItemSelected(item);
 	}

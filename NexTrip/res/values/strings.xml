@@ -7,6 +7,15 @@
     <string name="action_add">Add Item</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
-	<string name="dialog_name">Store Name:</string>
-	<string name="no_stores">No Saved Stores to Display</string>
+    <string name="dialog_name">Store Name:</string>
+    <string name="no_stores">No Saved Stores to Display</string>
+    <string name="title_activity_add_item">AddItemActivity</string>
+    <string name="content">Image</string>
+    <string name="item_name">Name:</string>
+    <string name="item_price">Price:</string>
+	<string name="item_details">Details:</string>
+	<string name="item_store">Store:</string>
+	<string name="item_store_name">Store Name:</string>
+	<string name="action_accept">Accept</string>
+	
 </resources>

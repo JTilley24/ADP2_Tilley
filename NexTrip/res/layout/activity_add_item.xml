@@ -1,0 +1,128 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="0dp"
+    android:orientation="vertical"
+    android:onClick="onClick"
+    tools:context=".AddItemActivity" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="15dp"
+        android:contentDescription="@string/content"
+        android:src="@drawable/itempic" />
+
+    <TextView
+        android:id="@+id/nameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/item_name" 
+  		android:textSize="20sp"
+  		android:textStyle="bold"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/dividerHorizontal"/>
+    
+    <EditText
+        android:id="@+id/nameInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/priceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/item_price"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+     <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/dividerHorizontal"/>
+    
+    <EditText
+        android:id="@+id/priceInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" 
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/detailsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/item_details"
+        android:textSize="20sp"
+  		android:textStyle="bold" />
+
+     <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/dividerHorizontal"/>
+    
+    <EditText
+        android:id="@+id/detailsInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text" />
+    
+    <TextView
+        android:id="@+id/storeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/item_store"
+        android:textSize="20sp"
+  		android:textStyle="bold" />
+
+     <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/dividerHorizontal"/>
+    
+    <Spinner
+        android:id="@+id/storeSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"/>
+
+    <LinearLayout
+        android:id="@+id/storeNameView"
+        android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical"
+	    android:visibility="gone">
+	    <TextView
+	        android:id="@+id/storeNameLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/item_store_name"
+	        android:textSize="20sp"
+	        android:textStyle="bold"/>
+
+	    <EditText
+	        android:id="@+id/storeName"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:ems="10" 
+	        android:inputType="text"/>
+    
+    </LinearLayout>
+    
+</LinearLayout>
