@@ -13,9 +13,11 @@
     <string name="content">Image</string>
     <string name="item_name">Name:</string>
     <string name="item_price">Price:</string>
-	<string name="item_details">Details:</string>
-	<string name="item_store">Store:</string>
-	<string name="item_store_name">Store Name:</string>
-	<string name="action_accept">Accept</string>
-	
+    <string name="item_details">Details:</string>
+    <string name="item_store">Store:</string>
+    <string name="item_store_name">Store Name:</string>
+    <string name="action_accept">Accept</string>
+    <string name="title_activity_store_details">StoreDetailsActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

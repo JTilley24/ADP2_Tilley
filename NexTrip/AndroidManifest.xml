@@ -49,6 +49,10 @@
             android:name="com.jtilley.nextrip.AddItemActivity"
             android:label="@string/title_activity_add_item" >
         </activity>
+        <activity
+            android:name="com.jtilley.nextrip.StoreDetailsActivity"
+            android:label="@string/title_activity_store_details" >
+        </activity>
     </application>
 
 </manifest>

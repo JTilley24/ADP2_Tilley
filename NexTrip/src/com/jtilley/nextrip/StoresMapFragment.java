@@ -18,9 +18,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class StoresMapFragment extends MapFragment{
@@ -34,6 +36,7 @@ MarkerOptions current;
 		Location getLocation();
 		void displaySearch(Boolean tabSearch);
 		void showDialog(String name, Double lat, Double lng);
+		void openStoreDetails(String store);
 	}
 	
 	private OnStoresMapClicked parentActivity;
@@ -62,10 +65,12 @@ MarkerOptions current;
 		// TODO Auto-generated method stub
 		parentActivity.displaySearch(false);
 		map = this.getMap();
+		map.setMyLocationEnabled(true);
 		location = parentActivity.getLocation();
 		if(location != null){
 			LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
+			
 			
 			//Save Selected Location as new Store
 			map.setOnMapLongClickListener(new OnMapLongClickListener() {
@@ -78,7 +83,17 @@ MarkerOptions current;
 					Log.i("LATLNG", position.toString());
 				}
 			});
-			map.setMyLocationEnabled(true);
+			map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+				
+				@Override
+				public void onInfoWindowClick(Marker marker) {
+					// TODO Auto-generated method stub
+					String store = marker.getTitle().toString();
+					Log.i("STORE", store);
+					parentActivity.openStoreDetails(store);
+				}
+			});
+			
 			displayStoresMarkers();
 		}else{
 			Toast.makeText(getActivity(), "Please turn on GPS and try again.", Toast.LENGTH_SHORT).show();

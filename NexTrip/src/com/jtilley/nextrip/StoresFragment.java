@@ -10,9 +10,12 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ ArrayList<String> storesArray;
 
 	public interface OnStoresListClicked{
 		void displaySearch(Boolean tabSearch);
+		void openStoreDetails(String store);
 	}
 	
 	private OnStoresListClicked parentActivity;
@@ -48,6 +52,18 @@ ArrayList<String> storesArray;
 		
 		storesList = (ListView) view.findViewById(R.id.storeList);
 		noStores = (TextView) view.findViewById(R.id.noStores);
+		
+		storesList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				// TODO Auto-generated method stub
+				String store = parent.getItemAtPosition(position).toString();
+				Log.i("STORE", store);
+				parentActivity.openStoreDetails(store);
+			}
+		});
 		
 		displayStoresList();
 		

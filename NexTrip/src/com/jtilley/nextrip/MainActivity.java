@@ -17,6 +17,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.app.ActionBar;
@@ -25,13 +28,9 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -49,16 +48,14 @@ import android.widget.Toast;
 import android.widget.SearchView.OnQueryTextListener;
 
 
-public class MainActivity extends FragmentActivity implements StoresFragment.OnStoresListClicked, StoresMapFragment.OnStoresMapClicked, NearbyMapFragment.OnPlacesClicked, OnQueryTextListener{
-private LocationManager lManager;
-private String provider;
-MyLocationListener locListener;
+public class MainActivity extends FragmentActivity implements GooglePlayServicesClient.ConnectionCallbacks,GooglePlayServicesClient.OnConnectionFailedListener, StoresFragment.OnStoresListClicked, StoresMapFragment.OnStoresMapClicked, NearbyMapFragment.OnPlacesClicked, OnQueryTextListener{
 ActionBar aBar;
 Location location;
 String data;
 Menu abMenu;
 SearchView searchField;
 MenuItem addAction;
+LocationClient myclient;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +86,12 @@ MenuItem addAction;
 			aBar.setSelectedNavigationItem(0);
 		}
 		
-		//Get Current Location
-		locListener = new MyLocationListener();
-		getLocation();	
+		
+		myclient = new LocationClient(this, this, this);
+		myclient.connect();
+			
+		
+		
 	}
 	
 	//Create ActionBar Menu
@@ -164,14 +164,8 @@ MenuItem addAction;
 	
 	//Get Current Location
 	public Location getLocation(){
-		lManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		provider = lManager.getBestProvider(criteria, false);
 		
-		lManager.requestLocationUpdates(provider, 0, 1, locListener);
-		location = lManager.getLastKnownLocation(provider);
-		
+		location = myclient.getLastLocation();
 		return location;
 	}
 	
@@ -199,6 +193,12 @@ MenuItem addAction;
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void openStoreDetails(String store){
+		Intent details = new Intent(this, StoreDetailsActivity.class);
+		details.putExtra("store", store);
+		startActivity(details);
 	}
 
 	public static class TabListener<T extends Fragment>implements ActionBar.TabListener{
@@ -252,7 +252,7 @@ MenuItem addAction;
 
 	}
 	
-	private final class MyLocationListener implements LocationListener{
+	/*private final class MyLocationListener implements LocationListener{
 
 		@Override
 		public void onLocationChanged(Location location) {
@@ -263,22 +263,22 @@ MenuItem addAction;
 		@Override
 		public void onProviderDisabled(String provider) {
 			// TODO Auto-generated method stub
-			
+			Log.i("providerD", provider);
 		}
 
 		@Override
 		public void onProviderEnabled(String provider) {
 			// TODO Auto-generated method stub
-			
+			Log.i("provider", provider);
 		}
 
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			// TODO Auto-generated method stub
-			
+			Log.i("status", provider);
 		}
 		
-	}
+	}*/
 	
 	//Send Location and Search Input to Places API
 	public void getPlaces(String keyword, Location location){
@@ -424,6 +424,26 @@ MenuItem addAction;
 	public void displayPlaces(JSONObject json) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult arg0) {
+		// TODO Auto-generated method stub
+		Log.i("connect", "connect failed");
+	}
+
+	@Override
+	public void onConnected(Bundle arg0) {
+		// TODO Auto-generated method stub
+		Log.i("connect", "connected");
+		getLocation();
+		
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		Log.i("connect", "disconnected");
 	}
 
 	
