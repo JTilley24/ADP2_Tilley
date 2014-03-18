@@ -11,23 +11,28 @@ import com.google.android.gms.maps.model.LatLng;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 public class AddItemFragment extends Fragment{
 ArrayList<String> storesArray;
 SharedPreferences prefs;
+ImageView itemPic;
+String imageFile;
 Spinner storeSpinner;
 EditText storeNameInput;
 LinearLayout storeNameView;
@@ -39,6 +44,7 @@ JSONArray storesJSON;
 
 	public interface OnSaveItem{
 		LatLng getLocation();
+		void openCamera();
 	}
 
 	private OnSaveItem parentActivity;
@@ -63,6 +69,16 @@ JSONArray storesJSON;
 		storeSpinner = (Spinner) view.findViewById(R.id.storeSpinner);
 		storeNameInput = (EditText) view.findViewById(R.id.storeName);
 		storeNameView = (LinearLayout) view.findViewById(R.id.storeNameView);
+		
+		itemPic = (ImageView) view.findViewById(R.id.itemPic);
+		itemPic.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				parentActivity.openCamera();
+			}
+		});
 		
 		nameInput = (EditText) view.findViewById(R.id.nameInput);
 		nameInput.addTextChangedListener(new TextWatcher() {
@@ -96,6 +112,10 @@ JSONArray storesJSON;
 		prefs = getActivity().getSharedPreferences("user_prefs", 0);
 		
 		getStores();
+		
+		imageFile = "";
+		
+		
 		return view;
 	}
 
@@ -170,7 +190,7 @@ JSONArray storesJSON;
 					itemObj.put("name", nameInput.getText().toString());
 					itemObj.put("price", priceInput.getText().toString());
 					itemObj.put("details", detailsInput.getText().toString());
-					itemObj.put("image", "");
+					itemObj.put("image", imageFile);
 					JSONArray itemArray = new JSONArray();
 					if(saveStore.has("items")){
 						itemArray = saveStore.getJSONArray("items");
@@ -200,7 +220,7 @@ JSONArray storesJSON;
 					itemObj.put("name", nameInput.getText().toString());
 					itemObj.put("price", priceInput.getText().toString());
 					itemObj.put("details", detailsInput.getText().toString());
-					itemObj.put("image", "");
+					itemObj.put("image", imageFile);
 					JSONArray itemArray = new JSONArray();
 					itemArray.put(itemObj);
 					saveStore.put("name", newStoreName);
@@ -220,6 +240,15 @@ JSONArray storesJSON;
 			}
 		}
 		
+	}
+	
+	public void setImage(Bitmap image, String fileName){
+		if(image != null){
+			itemPic.setImageBitmap(image);
+			if(fileName != null){
+				imageFile = fileName;
+			}
+		}
 	}
 
 }

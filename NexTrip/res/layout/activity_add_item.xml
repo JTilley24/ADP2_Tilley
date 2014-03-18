@@ -11,7 +11,7 @@
     tools:context=".AddItemActivity" >
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/itemPic"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginLeft="17dp"
