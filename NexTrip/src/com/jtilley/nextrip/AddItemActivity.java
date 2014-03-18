@@ -1,21 +1,28 @@
 package com.jtilley.nextrip;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-public class AddItemActivity extends Activity {
+public class AddItemActivity extends Activity implements AddItemFragment.OnSaveItem {
+Double lat;
+Double lng;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_add_item);
-
+		Intent intent = getIntent();
+		Bundle extras = intent.getExtras();
+		lat = extras.getDouble("lat");
+		lng = extras.getDouble("lng");
 		
 	}
 
@@ -36,9 +43,17 @@ public class AddItemActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}else if(id == R.id.action_accept){
-			Log.i("SAVE", "Item will be Saved!");
+			AddItemFragment frag = (AddItemFragment) getFragmentManager().findFragmentById(R.id.add_item_frag);
+			frag.saveItem();
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public LatLng getLocation(){
+		LatLng location = new LatLng(lat, lng);
+		
+		return location;
+		
 	}
 	
 	public void onClick(View view){

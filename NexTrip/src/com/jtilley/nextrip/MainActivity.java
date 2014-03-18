@@ -113,6 +113,8 @@ MenuItem addAction;
 		if(item.getItemId() == addAction.getItemId()){
 			//Toast.makeText(this, "This will open the Add Item.", Toast.LENGTH_SHORT).show();
 			Intent addItem = new Intent(this, AddItemActivity.class);
+			addItem.putExtra("lat", getLocation().getLatitude());
+			addItem.putExtra("lng", getLocation().getLongitude());
 			startActivity(addItem);
 		}
 		return super.onOptionsItemSelected(item);

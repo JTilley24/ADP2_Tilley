@@ -20,7 +20,6 @@
         android:src="@drawable/itempic" />
 
     <TextView
-        android:id="@+id/nameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -41,7 +40,6 @@
         android:inputType="text" />
 
     <TextView
-        android:id="@+id/priceLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -59,10 +57,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10" 
-        android:inputType="number"/>
+        android:inputType="numberDecimal"/>
 
     <TextView
-        android:id="@+id/detailsLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -83,7 +80,6 @@
         android:inputType="text" />
     
     <TextView
-        android:id="@+id/storeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -108,7 +104,6 @@
 	    android:orientation="vertical"
 	    android:visibility="gone">
 	    <TextView
-	        android:id="@+id/storeNameLabel"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="10dp"
