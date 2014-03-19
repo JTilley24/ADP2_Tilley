@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+	  <CheckBox
+	      android:id="@+id/checkBox1"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:layout_alignParentLeft="true"
+	      android:layout_alignParentTop="true" />
+
+	  <TextView
+	      android:id="@+id/itemDetails"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:layout_alignParentRight="true"
+	      android:layout_below="@+id/itemName" />
+
+	  <ImageView
+	      android:id="@+id/itemImage"
+	      android:layout_width="50dp"
+	      android:layout_height="50dp"
+	      android:layout_alignParentTop="true"
+	      android:layout_marginLeft="18dp"
+	      android:layout_toRightOf="@+id/checkBox1"
+	      android:src="@drawable/itempic" 
+	      android:contentDescription="@string/content"/>
+
+	  <TextView
+	      android:id="@+id/itemName"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:layout_alignParentTop="true"
+	      android:layout_marginLeft="14dp"
+	      android:layout_toRightOf="@+id/itemImage" />
+
+	  <TextView
+	      android:id="@+id/itemPrice"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:layout_alignLeft="@+id/itemName"
+	      android:layout_below="@+id/itemName" />
+	  
+</RelativeLayout>
