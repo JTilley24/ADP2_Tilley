@@ -76,6 +76,11 @@ public ItemListAdapter(Activity act, JSONArray array){
 				// TODO Auto-generated method stub
 				if(isChecked){
 					selectedItems.add(index);
+					if(!isItemsSelected()){
+						StoreDetailsFragment frag = (StoreDetailsFragment) activity.getFragmentManager().findFragmentById(R.id.store_details_frag);
+						frag.setActionBar();
+					}
+										
 				}else{
 					selectedItems.remove(index);
 				}
@@ -85,7 +90,7 @@ public ItemListAdapter(Activity act, JSONArray array){
 		
 		try {
 			JSONObject itemObj = itemsArray.getJSONObject(position);
-			nameText.setText("Name: " + itemObj.getString("name"));
+			nameText.setText(itemObj.getString("name"));
 			priceText.setText("Price: " + itemObj.getString("price"));
 			detailsText.setText("Details: " + itemObj.getString("details"));
 			String imageString = itemObj.getString("image");
@@ -115,6 +120,13 @@ public ItemListAdapter(Activity act, JSONArray array){
 	}
 	ArrayList<String> getSelectedItems(){
 		return selectedItems;
+	}
+	
+	Boolean isItemsSelected(){
+		if(selectedItems.size() == 1){
+			return false;
+		}
+		return true;
 	}
 	
 }

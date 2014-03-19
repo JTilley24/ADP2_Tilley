@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.jtilley.nextrip.StoreDetailsActivity" >
+    tools:context="com.jtilley.nextrip.RecentHistoryActivity" >
 
     <item
         android:id="@+id/action_settings"
@@ -8,11 +8,11 @@
         android:showAsAction="never"
         android:title="@string/action_settings"/>
     
-   <item 
-       android:id="@+id/action_history"
-       android:icon="@drawable/ic_action_collection"
-       android:title="@string/history"
-       android:orderInCategory="1"
-       android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_clear"
+	    android:icon="@drawable/ic_action_discard"
+	    android:title="@string/discard"
+	    android:showAsAction="ifRoom"
+	    android:orderInCategory="1"/>
 
 </menu>

@@ -53,6 +53,10 @@
             android:name="com.jtilley.nextrip.StoreDetailsActivity"
             android:label="@string/title_activity_store_details" >
         </activity>
+        <activity
+            android:name="com.jtilley.nextrip.RecentHistoryActivity"
+            android:label="@string/title_activity_recent_history" >
+        </activity>
     </application>
 
 </manifest>

@@ -18,6 +18,11 @@
     <string name="item_store_name">Store Name:</string>
     <string name="action_accept">Accept</string>
     <string name="title_activity_store_details">StoreDetailsActivity</string>
+    <string name="no_items">No Saved Items for this Store</string>
     <string name="discard">Discard</string>
+    <string name="history">History</string>
+    <string name="action_item_accept">Add</string>
+    <string name="title_activity_recent_history">RecentHistoryActivity</string>
+    <string name="no_history">No Recent History</string>
 
 </resources>

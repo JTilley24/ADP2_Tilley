@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+	<item
+        android:id="@+id/action_discard"
+	    android:icon="@drawable/ic_action_discard"
+	    android:title="@string/discard"
+	    android:showAsAction="ifRoom"
+	    android:orderInCategory="1"/>
+	<item
+        android:id="@+id/action_item_accept"
+	    android:icon="@drawable/ic_action_accept"
+	    android:title="@string/action_item_accept"
+	    android:showAsAction="ifRoom"
+	    android:orderInCategory="2"/>   
+
+</menu>

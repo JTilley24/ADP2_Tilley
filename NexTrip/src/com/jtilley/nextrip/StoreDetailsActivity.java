@@ -1,6 +1,7 @@
 package com.jtilley.nextrip;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +12,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class StoreDetailsActivity extends Activity implements StoreDetailsFragment.OnItemSelected {
@@ -19,6 +22,8 @@ String store;
 JSONObject storeObj;
 JSONArray storesArray;
 JSONArray itemsArray;
+
+	protected Object actionMode;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -112,6 +117,44 @@ JSONArray itemsArray;
 		return true;
 	}
 	
+	public void saveItemHistory(ArrayList<String> selectedItems){
+		JSONArray historyArray = new JSONArray();
+		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
+		String historyString = prefs.getString("history", null);
+		if(historyString.length() == 0){
+			try {
+				historyArray = new JSONArray(historyString);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		for(int i=0; i<itemsArray.length();i++){
+			if(!isChecked(selectedItems, i)){
+				try {
+					JSONObject tempObject = itemsArray.getJSONObject(i);
+					Calendar date = Calendar.getInstance();
+					String today = String.valueOf(date.get(Calendar.MONTH) + "-" + date.get(Calendar.DATE) + "-" + date.get(Calendar.YEAR) );
+					tempObject.put("day", today);
+					tempObject.put("store", store);
+					historyArray.put(itemsArray.get(i));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		SharedPreferences.Editor editPrefs = prefs.edit();
+		editPrefs.putString("history", historyArray.toString());
+		editPrefs.commit();
+		
+		Log.i("HISTORY", historyArray.toString());
+	}
+	
+	public void displayItemsContextual(){
+		actionMode = StoreDetailsActivity.this.startActionMode(aMode);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -128,12 +171,52 @@ JSONArray itemsArray;
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
-		}else if(id == R.id.action_discard){
-			StoreDetailsFragment frag = (StoreDetailsFragment) getFragmentManager().findFragmentById(R.id.store_details_frag);
-			ArrayList<String> selectedItems = frag.getSelectedItems();
-			deleteItems(selectedItems);
+		}else if (id == R.id.action_history){
+			Intent history = new Intent(this, RecentHistoryActivity.class);
+			startActivity(history);
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	private ActionMode.Callback aMode = new ActionMode.Callback() {
+		
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			// TODO Auto-generated method stub
+			actionMode = null;
+		}
+		
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			// TODO Auto-generated method stub
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.items_contextual, menu);
+			return true;
+		}
+		
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			// TODO Auto-generated method stub
+			if(item.getItemId() == R.id.action_discard){
+				StoreDetailsFragment frag = (StoreDetailsFragment) getFragmentManager().findFragmentById(R.id.store_details_frag);
+				ArrayList<String> selectedItems = frag.getSelectedItems();
+				deleteItems(selectedItems);
+				mode.finish();
+			}else if(item.getItemId() == R.id.action_item_accept){
+				StoreDetailsFragment frag = (StoreDetailsFragment) getFragmentManager().findFragmentById(R.id.store_details_frag);
+				ArrayList<String> selectedItems = frag.getSelectedItems();
+				saveItemHistory(selectedItems);
+				deleteItems(selectedItems);
+				mode.finish();
+			}
+			return true;
+		}
+	};
+	
 }

@@ -9,19 +9,20 @@ import org.json.JSONArray;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class StoreDetailsFragment extends Fragment{
 ListView itemList;
+TextView noItems;
 ItemListAdapter adapter;
 
 	public interface OnItemSelected{
 		JSONArray getItems();
-		
+		void displayItemsContextual();
 	}
 	
 	private OnItemSelected parentActivity;
@@ -44,7 +45,7 @@ ItemListAdapter adapter;
 		View view = inflater.inflate(R.layout.activity_store_details, container);
 		
 		itemList = (ListView) view.findViewById(R.id.itemsList);
-		
+		noItems = (TextView) view.findViewById(R.id.noItems);
 		
 		return view;
 	}
@@ -57,17 +58,24 @@ ItemListAdapter adapter;
 	}
 	
 	public void displayItems(){
-		adapter = new ItemListAdapter(getActivity(), parentActivity.getItems());
-		itemList.setAdapter(adapter);
+		if(parentActivity.getItems().length() == 0){
+			itemList.setVisibility(View.GONE);
+			noItems.setVisibility(View.VISIBLE);
+		}else{
+			itemList.setVisibility(View.VISIBLE);
+			noItems.setVisibility(View.GONE);
+			adapter = new ItemListAdapter(getActivity(), parentActivity.getItems());
+			itemList.setAdapter(adapter);
+		}
 	}
 	
 	public ArrayList<String> getSelectedItems(){
 		ArrayList<String> selecteditems = adapter.getSelectedItems();
 		
-		if(selecteditems.size() > 0){
-			Log.i("Selected", selecteditems.get(1));
-		}
 		return selecteditems;
+	}
+	public void setActionBar(){
+		parentActivity.displayItemsContextual();
 	}
 
 }
