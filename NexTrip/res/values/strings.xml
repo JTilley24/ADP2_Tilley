@@ -9,7 +9,7 @@
     <string name="save">Save</string>
     <string name="dialog_name">Store Name:</string>
     <string name="no_stores">No Saved Stores to Display</string>
-    <string name="title_activity_add_item">AddItemActivity</string>
+    <string name="title_activity_add_item">Add Item</string>
     <string name="content">Image</string>
     <string name="item_name">Name:</string>
     <string name="item_price">Price:</string>
@@ -22,7 +22,9 @@
     <string name="discard">Discard</string>
     <string name="history">History</string>
     <string name="action_item_accept">Add</string>
-    <string name="title_activity_recent_history">RecentHistoryActivity</string>
+    <string name="title_activity_recent_history">Recent History</string>
     <string name="no_history">No Recent History</string>
+    <string name="history_dialog_text">Delete All Recent History?</string>
+    <string name="ok_button">OK</string>
 
 </resources>

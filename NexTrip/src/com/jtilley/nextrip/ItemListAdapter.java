@@ -91,8 +91,8 @@ public ItemListAdapter(Activity act, JSONArray array){
 		try {
 			JSONObject itemObj = itemsArray.getJSONObject(position);
 			nameText.setText(itemObj.getString("name"));
-			priceText.setText("Price: " + itemObj.getString("price"));
-			detailsText.setText("Details: " + itemObj.getString("details"));
+			priceText.setText("Price:\n" + itemObj.getString("price"));
+			detailsText.setText("Details:\n " + itemObj.getString("details"));
 			String imageString = itemObj.getString("image");
 			if(imageString.length() != 0){
 				File path = Environment.getExternalStoragePublicDirectory("/NexTrip/");

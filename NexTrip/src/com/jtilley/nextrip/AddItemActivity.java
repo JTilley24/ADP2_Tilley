@@ -32,11 +32,11 @@ private static final int CAMERA_REQUEST = 1888;
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_add_item);
+		//Get Current Location
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 		lat = extras.getDouble("lat");
-		lng = extras.getDouble("lng");
-		
+		lng = extras.getDouble("lng");	
 	}
 
 	@Override
@@ -56,23 +56,27 @@ private static final int CAMERA_REQUEST = 1888;
 		if (id == R.id.action_settings) {
 			return true;
 		}else if(id == R.id.action_accept){
+			//Add Item to Selected Store
 			AddItemFragment frag = (AddItemFragment) getFragmentManager().findFragmentById(R.id.add_item_frag);
 			frag.saveItem();
+			finish();
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
+	//Get Location for New Store
 	public LatLng getLocation(){
 		LatLng location = new LatLng(lat, lng);
 		
 		return location;
 	}
-	
+	//Open Camera Intent
 	public void openCamera(){
 		Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		startActivityForResult(camera, CAMERA_REQUEST);
 	}
 	
+	//Receive image data from Camera
 	public void onActivityResult(int requestCode, int resultCode, Intent data){
 		if(resultCode == RESULT_OK){
 			if(requestCode == CAMERA_REQUEST){
@@ -83,6 +87,7 @@ private static final int CAMERA_REQUEST = 1888;
 		}
 	}
 	
+	//Save image to External Storage
 	public String saveImage(){
 		File path = Environment.getExternalStoragePublicDirectory("/NexTrip/");
 		if(!path.exists()){
@@ -108,6 +113,7 @@ private static final int CAMERA_REQUEST = 1888;
 		return fileName;
 	}
 	
+	//Hide Keyboard when User clicks out of EditText
 	public void onClick(View view){
 		InputMethodManager immanager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 		immanager.hideSoftInputFromWindow(view.getWindowToken(), 0);

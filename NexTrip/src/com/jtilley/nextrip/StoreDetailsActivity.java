@@ -32,10 +32,10 @@ JSONArray itemsArray;
 		store = intent.getExtras().getString("store");
 		
 		setTitle(store);
-		
 		setItems();
 	}
 
+	//Get Items for Selected Store
 	public void setItems(){
 		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
 		try {
@@ -63,7 +63,7 @@ JSONArray itemsArray;
 		}
 		
 	}
-	
+	//Return Items for Custom Adapter
 	public JSONArray getItems(){
 		setItems();
 		JSONArray items = new JSONArray();
@@ -73,6 +73,7 @@ JSONArray itemsArray;
 		return items;
 	}
 	
+	//Delete Selected Items from Store Object
 	public void deleteItems(ArrayList<String> selectedItems){
 		JSONArray tempArray = new JSONArray();
 		for(int i=0; i<itemsArray.length();i++){
@@ -108,6 +109,7 @@ JSONArray itemsArray;
 		Log.i("ITEMS", tempArray.toString());
 	}
 	
+	//Check for Item's Checkbox
 	public Boolean isChecked(ArrayList<String> selectedItems, int index){
 		for(int i=0; i< selectedItems.size();i++){
 			if(Integer.valueOf(selectedItems.get(i)) == index){
@@ -117,11 +119,12 @@ JSONArray itemsArray;
 		return true;
 	}
 	
+	//Save Selected Items to Recent History
 	public void saveItemHistory(ArrayList<String> selectedItems){
 		JSONArray historyArray = new JSONArray();
 		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
 		String historyString = prefs.getString("history", null);
-		if(historyString.length() == 0){
+		if(historyString.length() != 0){
 			try {
 				historyArray = new JSONArray(historyString);
 			} catch (JSONException e) {
@@ -151,6 +154,7 @@ JSONArray itemsArray;
 		Log.i("HISTORY", historyArray.toString());
 	}
 	
+	//Display Contextual Action Bar 
 	public void displayItemsContextual(){
 		actionMode = StoreDetailsActivity.this.startActionMode(aMode);
 	}
@@ -172,12 +176,14 @@ JSONArray itemsArray;
 		if (id == R.id.action_settings) {
 			return true;
 		}else if (id == R.id.action_history){
+			//Open Recent History
 			Intent history = new Intent(this, RecentHistoryActivity.class);
 			startActivity(history);
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	//Contextual Action Bar
 	private ActionMode.Callback aMode = new ActionMode.Callback() {
 		
 		@Override
@@ -200,6 +206,7 @@ JSONArray itemsArray;
 			return true;
 		}
 		
+		//Check for Delete or Save to History
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 			// TODO Auto-generated method stub

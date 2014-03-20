@@ -86,12 +86,9 @@ LocationClient myclient;
 			aBar.setSelectedNavigationItem(0);
 		}
 		
-		
+		//Google Play Services Location
 		myclient = new LocationClient(this, this, this);
 		myclient.connect();
-			
-		
-		
 	}
 	
 	//Create ActionBar Menu
@@ -161,11 +158,12 @@ LocationClient myclient;
 			}
 		}
 	}
-	
+
 	//Get Current Location
 	public Location getLocation(){
-		
-		location = myclient.getLastLocation();
+		if(location == null){
+			location = myclient.getLastLocation();
+		}
 		return location;
 	}
 	

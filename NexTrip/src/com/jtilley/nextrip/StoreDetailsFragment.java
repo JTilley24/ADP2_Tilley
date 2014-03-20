@@ -1,7 +1,5 @@
 package com.jtilley.nextrip;
 
-
-
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -57,6 +55,7 @@ ItemListAdapter adapter;
 		displayItems();
 	}
 	
+	//Display Items in ListView
 	public void displayItems(){
 		if(parentActivity.getItems().length() == 0){
 			itemList.setVisibility(View.GONE);
@@ -69,13 +68,15 @@ ItemListAdapter adapter;
 		}
 	}
 	
+	//Return Array of Selected Items
 	public ArrayList<String> getSelectedItems(){
 		ArrayList<String> selecteditems = adapter.getSelectedItems();
 		
 		return selecteditems;
 	}
+	
+	//Display Contextual Action Bar
 	public void setActionBar(){
 		parentActivity.displayItemsContextual();
 	}
-
 }

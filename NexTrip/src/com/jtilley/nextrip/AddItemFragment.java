@@ -99,6 +99,7 @@ JSONArray storesJSON;
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
+				//Validate Name Input
 				if(nameInput.getText().length() == 0){
 					nameInput.setError("Enter Name of Item!");
 				}else{
@@ -115,10 +116,10 @@ JSONArray storesJSON;
 		
 		imageFile = "";
 		
-		
 		return view;
 	}
-
+	
+	//Get Stores Array for Spinner
 	public void getStores(){
 		String storesString = prefs.getString("saved_stores", null);
 		storesArray = new ArrayList<String>();
@@ -164,6 +165,7 @@ JSONArray storesJSON;
 		});
 	}
 	
+	//Save Item to Selected Store
 	public void saveItem(){
 		Log.i("SAVE", "Item will be Saved!");
 		if(nameInput.getText().length() == 0){
@@ -242,6 +244,7 @@ JSONArray storesJSON;
 		
 	}
 	
+	//Set Image from Camera to ImageView
 	public void setImage(Bitmap image, String fileName){
 		if(image != null){
 			itemPic.setImageBitmap(image);

@@ -1,6 +1,5 @@
 package com.jtilley.nextrip;
 
-
 import org.json.JSONArray;
 
 import android.app.Activity;
@@ -53,6 +52,7 @@ HistoryListAdapter adapter;
 		displayHistory();
 	}
 	
+	//Display History data in ListView
 	public void displayHistory(){
 		if(parentActivity.getHistory().length() == 0){
 			historyList.setVisibility(View.GONE);
