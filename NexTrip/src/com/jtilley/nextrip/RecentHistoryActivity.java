@@ -32,7 +32,7 @@ SharedPreferences prefs;
 		prefs = getSharedPreferences("user_prefs", 0);
 		String history = prefs.getString("history", null);
 		JSONArray historyArray = new JSONArray();
-		if(history.length() != 0){
+		if(history != null){
 			Log.i("HISTORY", history);
 			try {
 				historyArray = new JSONArray(history);

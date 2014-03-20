@@ -124,12 +124,14 @@ JSONArray itemsArray;
 		JSONArray historyArray = new JSONArray();
 		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
 		String historyString = prefs.getString("history", null);
-		if(historyString.length() != 0){
-			try {
-				historyArray = new JSONArray(historyString);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		if(historyString != null){
+			if(historyString.length() != 0){
+				try {
+					historyArray = new JSONArray(historyString);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		for(int i=0; i<itemsArray.length();i++){

@@ -138,7 +138,7 @@ JSONArray storesJSON;
 				e.printStackTrace();
 			}
 		}
-		storesArray.add("....New");
+		storesArray.add("New...");
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, storesArray);
 		adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 		
@@ -170,7 +170,7 @@ JSONArray storesJSON;
 		Log.i("SAVE", "Item will be Saved!");
 		if(nameInput.getText().length() == 0){
 			nameInput.setError("Enter Name of Item!");
-		}else if(!(storeSpinner.getSelectedItem().toString().equalsIgnoreCase("....New"))){
+		}else if(!(storeSpinner.getSelectedItem().toString().equalsIgnoreCase("New..."))){
 			selectedStore = storeSpinner.getSelectedItem().toString();
 			int index = 0;
 			JSONObject saveStore = null;

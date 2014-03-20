@@ -1,7 +1,5 @@
 package com.jtilley.nextrip;
 
-
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

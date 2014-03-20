@@ -108,7 +108,6 @@ LocationClient myclient;
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		if(item.getItemId() == addAction.getItemId()){
-			//Toast.makeText(this, "This will open the Add Item.", Toast.LENGTH_SHORT).show();
 			Intent addItem = new Intent(this, AddItemActivity.class);
 			addItem.putExtra("lat", getLocation().getLatitude());
 			addItem.putExtra("lng", getLocation().getLongitude());
@@ -161,7 +160,7 @@ LocationClient myclient;
 
 	//Get Current Location
 	public Location getLocation(){
-		if(location == null){
+		if(myclient.isConnected()){
 			location = myclient.getLastLocation();
 		}
 		return location;
@@ -249,34 +248,6 @@ LocationClient myclient;
 		}
 
 	}
-	
-	/*private final class MyLocationListener implements LocationListener{
-
-		@Override
-		public void onLocationChanged(Location location) {
-			// TODO Auto-generated method stub
-			Log.i("LOC", location.toString());
-		}
-
-		@Override
-		public void onProviderDisabled(String provider) {
-			// TODO Auto-generated method stub
-			Log.i("providerD", provider);
-		}
-
-		@Override
-		public void onProviderEnabled(String provider) {
-			// TODO Auto-generated method stub
-			Log.i("provider", provider);
-		}
-
-		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-			// TODO Auto-generated method stub
-			Log.i("status", provider);
-		}
-		
-	}*/
 	
 	//Send Location and Search Input to Places API
 	public void getPlaces(String keyword, Location location){
@@ -442,6 +413,13 @@ LocationClient myclient;
 	public void onDisconnected() {
 		// TODO Auto-generated method stub
 		Log.i("connect", "disconnected");
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		//myclient.connect();
 	}
 
 	
