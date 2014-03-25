@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpEntity;
@@ -19,7 +20,10 @@ import org.json.JSONObject;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationClient.OnAddGeofencesResultListener;
+import com.google.android.gms.location.LocationStatusCodes;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.app.ActionBar;
@@ -28,6 +32,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -48,7 +53,7 @@ import android.widget.Toast;
 import android.widget.SearchView.OnQueryTextListener;
 
 
-public class MainActivity extends FragmentActivity implements GooglePlayServicesClient.ConnectionCallbacks,GooglePlayServicesClient.OnConnectionFailedListener, StoresFragment.OnStoresListClicked, StoresMapFragment.OnStoresMapClicked, NearbyMapFragment.OnPlacesClicked, OnQueryTextListener{
+public class MainActivity extends FragmentActivity implements GooglePlayServicesClient.ConnectionCallbacks,GooglePlayServicesClient.OnConnectionFailedListener, StoresFragment.OnStoresListClicked, StoresMapFragment.OnStoresMapClicked, NearbyMapFragment.OnPlacesClicked, OnQueryTextListener, OnAddGeofencesResultListener{
 ActionBar aBar;
 Location location;
 String data;
@@ -56,6 +61,7 @@ Menu abMenu;
 SearchView searchField;
 MenuItem addAction;
 LocationClient myclient;
+ArrayList<Geofence> storesFences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -406,6 +412,7 @@ LocationClient myclient;
 		// TODO Auto-generated method stub
 		Log.i("connect", "connected");
 		getLocation();
+		setGeofences();
 		
 	}
 
@@ -422,7 +429,36 @@ LocationClient myclient;
 		//myclient.connect();
 	}
 
-	
+	public void setGeofences(){
+		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
+		String storesString = prefs.getString("saved_stores", null);
+		if(storesString != null){
+			try {
+				storesFences = new ArrayList<Geofence>();
+				JSONArray storesJSON = new JSONArray(storesString);
+				for(int i=0;i < storesJSON.length(); i++){
+					JSONObject storeObj = storesJSON.getJSONObject(i);
+					Geofence geo = new Geofence.Builder().setRequestId(storeObj.getString("name")).setCircularRegion(storeObj.getDouble("lat"), storeObj.getDouble("lng"), 100).setExpirationDuration(Geofence.NEVER_EXPIRE).setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT).build();
+					storesFences.add(geo);
+				}
+				Intent intent = new Intent(this, GeofenceReciever.class);
+				PendingIntent pIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+				myclient.addGeofences(storesFences, pIntent, this);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+
+	@Override
+	public void onAddGeofencesResult(int arg0, String[] arg1) {
+		// TODO Auto-generated method stub
+		if(LocationStatusCodes.SUCCESS == arg0){
+			Log.i("GEOFENCES", arg1.toString());
+		}
+	}
 
 	
 

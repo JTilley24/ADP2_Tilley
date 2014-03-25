@@ -22,6 +22,7 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
 
     <application
         android:allowBackup="true"
@@ -57,6 +58,14 @@
             android:name="com.jtilley.nextrip.RecentHistoryActivity"
             android:label="@string/title_activity_recent_history" >
         </activity>
+        
+        <receiver android:name="com.jtilley.nextrip.GeofenceReciever"
+            	  android:exported="false">
+            <intent-filter >
+                <action android:name="com.jtilley.nextrip.ACTION_RECEIVE_GEOFENCE"/>
+            </intent-filter>
+            
+        </receiver>
     </application>
 
 </manifest>

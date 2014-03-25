@@ -123,7 +123,7 @@ JSONArray storesJSON;
 	public void getStores(){
 		String storesString = prefs.getString("saved_stores", null);
 		storesArray = new ArrayList<String>();
-		
+		storesJSON = new JSONArray();
 		if(storesString != null){
 			try {
 				storesJSON = new JSONArray(storesString);
