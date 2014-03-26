@@ -63,6 +63,9 @@ MenuItem addAction;
 LocationClient myclient;
 ArrayList<Geofence> storesFences;
 
+	
+	private static boolean isInForeground;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -94,7 +97,9 @@ ArrayList<Geofence> storesFences;
 		
 		//Google Play Services Location
 		myclient = new LocationClient(this, this, this);
-		myclient.connect();
+		if(!myclient.isConnected()){
+			myclient.connect();
+		}
 	}
 	
 	//Create ActionBar Menu
@@ -426,6 +431,7 @@ ArrayList<Geofence> storesFences;
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		isInForeground = true;
 		//myclient.connect();
 	}
 
@@ -442,8 +448,10 @@ ArrayList<Geofence> storesFences;
 					storesFences.add(geo);
 				}
 				Intent intent = new Intent(this, GeofenceReciever.class);
+				intent.setAction("ACTION_RECEIVE_GEOFENCE");
 				PendingIntent pIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 				myclient.addGeofences(storesFences, pIntent, this);
+				
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -460,6 +468,16 @@ ArrayList<Geofence> storesFences;
 		}
 	}
 
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		isInForeground = false;
+	}
+
+	public static Boolean getForeground(){
+		return isInForeground;
+	}
 	
 
 
