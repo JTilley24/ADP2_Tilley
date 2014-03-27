@@ -20,6 +20,7 @@ import android.util.Log;
 
 public class GeofenceReciever extends BroadcastReceiver{
 Context mContext;
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub
@@ -37,6 +38,7 @@ Context mContext;
 				storeIntent.putExtra("store", locs.get(0).getRequestId().toString());
 				PendingIntent pIntent = PendingIntent.getActivity(context, 0, storeIntent, 0);
 				
+				//Send notification on trigger
 				NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 				builder.setSmallIcon(R.drawable.ic_launcher)
 						.setContentTitle(locs.get(0).getRequestId())
@@ -49,6 +51,7 @@ Context mContext;
 		}
 	}
 
+	//Check if store has saved items
 	public Boolean hasItems(String store){
 		JSONArray storesArray = new JSONArray();
 		JSONObject storeObj = new JSONObject();

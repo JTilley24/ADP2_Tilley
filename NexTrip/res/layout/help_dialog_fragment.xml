@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/helpMapHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/help_map"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/helpMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/helpMapHeader"
+        android:layout_below="@+id/helpMapHeader" />
+
+    <TextView
+        android:id="@+id/helpItemHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/helpMap"
+        android:layout_below="@+id/helpMap"
+        android:layout_marginTop="12dp"
+        android:text="@string/help_item"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/helpItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/helpItemHeader"
+        android:layout_below="@+id/helpItemHeader" />
+
+    <TextView
+        android:id="@+id/helpGPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/helpItem"
+        android:layout_below="@+id/helpItem"
+        android:layout_marginTop="12dp"
+        android:text="@string/help_gps"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/helpGPSButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/helpGPS"
+        android:drawableLeft="@drawable/ic_settings"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:text="@string/help_gps_button" />
+
+</RelativeLayout>

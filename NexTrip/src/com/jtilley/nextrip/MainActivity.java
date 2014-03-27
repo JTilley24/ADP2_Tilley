@@ -28,18 +28,24 @@ import com.google.android.gms.maps.model.LatLng;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +55,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SearchView.OnQueryTextListener;
 
@@ -100,6 +107,13 @@ ArrayList<Geofence> storesFences;
 		if(!myclient.isConnected()){
 			myclient.connect();
 		}
+		
+		//Check for saved stores
+		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
+		String stores = prefs.getString("saved_stores", null);
+		if(stores == null){
+			displayHelp();
+		}
 	}
 	
 	//Create ActionBar Menu
@@ -123,6 +137,8 @@ ArrayList<Geofence> storesFences;
 			addItem.putExtra("lat", getLocation().getLatitude());
 			addItem.putExtra("lng", getLocation().getLongitude());
 			startActivity(addItem);
+		}else if(item.getItemId() == R.id.action_help){
+			displayHelp();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -432,9 +448,9 @@ ArrayList<Geofence> storesFences;
 		// TODO Auto-generated method stub
 		super.onResume();
 		isInForeground = true;
-		//myclient.connect();
 	}
 
+	//Convert Stores to Geofences and Add to Location Client
 	public void setGeofences(){
 		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
 		String storesString = prefs.getString("saved_stores", null);
@@ -460,6 +476,7 @@ ArrayList<Geofence> storesFences;
 		}
 	}
 
+	//Results of Geofences
 	@Override
 	public void onAddGeofencesResult(int arg0, String[] arg1) {
 		// TODO Auto-generated method stub
@@ -475,11 +492,58 @@ ArrayList<Geofence> storesFences;
 		isInForeground = false;
 	}
 
+	//Check if Application is in Foreground
 	public static Boolean getForeground(){
 		return isInForeground;
 	}
 	
+	//Display Help Dialog
+	public void displayHelp(){
+		DialogFragment helpDialog = new HelpDialog();
+		helpDialog.show(getFragmentManager(), "help_dialog");
+	}
+	
+	public static class HelpDialog extends DialogFragment{
 
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), android.R.style.Theme_Holo_Dialog));;
+			LayoutInflater inflater = getActivity().getLayoutInflater();
+			View view = inflater.inflate(R.layout.help_dialog_fragment, null);
+			
+			TextView helpStoreMap = (TextView) view.findViewById(R.id.helpMap);
+			helpStoreMap.setText("Click and Hold the point \n on the map where you would \n like the new store.");
+			helpStoreMap.setTextColor(Color.CYAN);
+			
+			TextView helpStoreItem = (TextView) view.findViewById(R.id.helpItem);
+			helpStoreItem.setText("Select 'New...' in the Store \n option and a new input \n will appear below.");
+			helpStoreItem.setTextColor(Color.CYAN);
+			
+			Button helpGPSButton = (Button) view.findViewById(R.id.helpGPSButton);
+			helpGPSButton.setOnClickListener(new OnClickListener() {
+				//Intent to Location Settings
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					Intent setttingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+					startActivity(setttingsIntent);
+				}
+			});
+			
+			builder.setView(view).setPositiveButton(R.string.help_close_button, new DialogInterface.OnClickListener() {
+				//Close Dialog
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					getDialog().dismiss();
+				}
+			}).setTitle("Help").setIcon(R.drawable.ic_action_help);
+			
+			return builder.create();
+		}
+		
+	}
 
 	
 }
