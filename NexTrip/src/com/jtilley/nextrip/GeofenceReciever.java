@@ -28,26 +28,20 @@ Context mContext;
 		List<Geofence> locs = LocationClient.getTriggeringGeofences(intent);
 		Log.i("TRIGGER", locs.toString());
 		
-		if(MainActivity.getForeground()){
-			Log.i("FOREGROUND", "App is in foreground");
-		}else{
-			Log.i("FOREGROUND", "App is not in foreground");
+		if(hasItems(locs.get(0).getRequestId().toString())){
+			Intent storeIntent = new Intent(context, StoreDetailsActivity.class);
+			storeIntent.putExtra("store", locs.get(0).getRequestId().toString());
+			PendingIntent pIntent = PendingIntent.getActivity(context, 0, storeIntent, 0);
 			
-			if(hasItems(locs.get(0).getRequestId().toString())){
-				Intent storeIntent = new Intent(context, StoreDetailsActivity.class);
-				storeIntent.putExtra("store", locs.get(0).getRequestId().toString());
-				PendingIntent pIntent = PendingIntent.getActivity(context, 0, storeIntent, 0);
-				
-				//Send notification on trigger
-				NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-				builder.setSmallIcon(R.drawable.ic_launcher)
-						.setContentTitle(locs.get(0).getRequestId())
-						.setContentText("You have saved item(s) at this store!")
-						.setContentIntent(pIntent);
-				
-				NotificationManager nManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-				nManager.notify(0, builder.build());
-			}
+			//Send notification on trigger
+			NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+			builder.setSmallIcon(R.drawable.ic_launcher)
+					.setContentTitle(locs.get(0).getRequestId())
+					.setContentText("You have saved item(s) at this store!")
+					.setContentIntent(pIntent);
+			
+			NotificationManager nManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+			nManager.notify(0, builder.build());
 		}
 	}
 
@@ -78,5 +72,4 @@ Context mContext;
 		}
 		return false;
 	}
-	
 }

@@ -66,7 +66,9 @@ MarkerOptions current;
 		parentActivity.displaySearch(false);
 		map = this.getMap();
 		map.setMyLocationEnabled(true);
-		location = parentActivity.getLocation();
+		if(location == null){
+			location = parentActivity.getLocation();
+		}
 		if(location != null){
 			LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));

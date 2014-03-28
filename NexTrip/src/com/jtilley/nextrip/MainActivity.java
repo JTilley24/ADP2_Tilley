@@ -70,9 +70,6 @@ MenuItem addAction;
 LocationClient myclient;
 ArrayList<Geofence> storesFences;
 
-	
-	private static boolean isInForeground;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -102,16 +99,15 @@ ArrayList<Geofence> storesFences;
 			aBar.setSelectedNavigationItem(0);
 		}
 		
-		//Google Play Services Location
-		myclient = new LocationClient(this, this, this);
-		if(!myclient.isConnected()){
-			myclient.connect();
-		}
+		
 		
 		//Check for saved stores
 		SharedPreferences prefs = getSharedPreferences("user_prefs", 0);
-		String stores = prefs.getString("saved_stores", null);
-		if(stores == null){
+		String first = prefs.getString("first_alert", null);
+		if(first == null){
+			SharedPreferences.Editor editPrefs = prefs.edit();
+			editPrefs.putString("first_alert", "help_displayed");
+			editPrefs.commit();
 			displayHelp();
 		}
 	}
@@ -213,6 +209,7 @@ ArrayList<Geofence> storesFences;
 			editPrefs.putString("saved_stores", storesArray.toString());
 			editPrefs.commit();
 			Log.i("SAVED", storesArray.toString());
+			setGeofences();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -273,7 +270,6 @@ ArrayList<Geofence> storesFences;
 				ft.detach(mFragment);
 			}
 		}
-
 	}
 	
 	//Send Location and Search Input to Places API
@@ -339,7 +335,6 @@ ArrayList<Geofence> storesFences;
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 		}
-		
 	}
 	
 	//Display DialogFragment
@@ -405,7 +400,6 @@ ArrayList<Geofence> storesFences;
 				}
 			});
 			
-			
 			return view;
 		}
 	}
@@ -447,7 +441,14 @@ ArrayList<Geofence> storesFences;
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		isInForeground = true;
+		
+		if(myclient == null){
+			//Google Play Services Location
+			myclient = new LocationClient(this, this, this);
+			if(!myclient.isConnected()){
+				myclient.connect();	
+			}
+		}
 	}
 
 	//Convert Stores to Geofences and Add to Location Client
@@ -460,7 +461,7 @@ ArrayList<Geofence> storesFences;
 				JSONArray storesJSON = new JSONArray(storesString);
 				for(int i=0;i < storesJSON.length(); i++){
 					JSONObject storeObj = storesJSON.getJSONObject(i);
-					Geofence geo = new Geofence.Builder().setRequestId(storeObj.getString("name")).setCircularRegion(storeObj.getDouble("lat"), storeObj.getDouble("lng"), 100).setExpirationDuration(Geofence.NEVER_EXPIRE).setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT).build();
+					Geofence geo = new Geofence.Builder().setRequestId(storeObj.getString("name")).setCircularRegion(storeObj.getDouble("lat"), storeObj.getDouble("lng"), 100).setExpirationDuration(Geofence.NEVER_EXPIRE).setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER).build();
 					storesFences.add(geo);
 				}
 				Intent intent = new Intent(this, GeofenceReciever.class);
@@ -485,18 +486,6 @@ ArrayList<Geofence> storesFences;
 		}
 	}
 
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		isInForeground = false;
-	}
-
-	//Check if Application is in Foreground
-	public static Boolean getForeground(){
-		return isInForeground;
-	}
-	
 	//Display Help Dialog
 	public void displayHelp(){
 		DialogFragment helpDialog = new HelpDialog();
@@ -541,9 +530,6 @@ ArrayList<Geofence> storesFences;
 			}).setTitle("Help").setIcon(R.drawable.ic_action_help);
 			
 			return builder.create();
-		}
-		
+		}	
 	}
-
-	
 }
